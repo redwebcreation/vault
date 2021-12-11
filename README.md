@@ -28,7 +28,6 @@ func main() {
 
 	fmt.Printf("%s", keyContents) // prints "the-secret"
 
-	// always returns nil
 	_ = v.Delete("key")
 
 	v.Has("key") // returns false
