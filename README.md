@@ -1,5 +1,7 @@
 # Vault
 
+[![Tests status badge](https://github.com/redwebcreation/vault/actions/workflows/tests.yml/badge.svg?branch=main)](https://github.com/redwebcreation/vault/actions/workflows/tests.yml)
+
 Vault provides a simple file-based key-value store for secrets.
 
 ## Installation
