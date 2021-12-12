@@ -19,14 +19,13 @@ func (l *LocalStorage) pathFor(key string) string {
 
 func (l *LocalStorage) read(key string) ([]byte, error) {
 	keyPath := l.pathFor(key)
-
 	_, err := os.Stat(keyPath)
 
-	if err != nil {
-		if os.IsNotExist(err) {
-			return nil, ErrKeyDoesNotExist
-		}
+	if os.IsNotExist(err) {
+		return nil, ErrKeyDoesNotExist
+	}
 
+	if err != nil {
 		return nil, err
 	}
 
@@ -66,7 +65,7 @@ func (l *LocalStorage) Get(key string, password []byte) ([]byte, error) {
 func (l *LocalStorage) Has(key string) bool {
 	_, err := l.read(key)
 
-	return err != nil
+	return err == nil
 }
 
 func (l *LocalStorage) Set(key string, value []byte, password []byte) error {
