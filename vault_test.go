@@ -129,7 +129,7 @@ func TestLocalStorage_Get4(t *testing.T) {
 	}
 
 	_, err = s.Get("foo", Password)
-	if err != ErrInvalidVaultVersion {
+	if err != ErrInvalidVaultFile {
 		t.Errorf("Expected get to return ErrInvalidVaultVersion, got %s", err)
 	}
 }
@@ -144,7 +144,7 @@ func TestLocalStorage_Get5(t *testing.T) {
 	}
 
 	_, err = s.Get("foo", Password)
-	if err != ErrInvalidCipher {
+	if err != ErrInvalidVaultFile {
 		t.Errorf("Expected get to return ErrInvalidCipher, got %s", err)
 	}
 }

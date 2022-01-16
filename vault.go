@@ -29,24 +29,14 @@ func (v *Vault) Get(key string, password []byte) ([]byte, error) {
 		return nil, err
 	}
 
-	re := regexp.MustCompile(`(?m)^\$VAULT;(?P<version>[0-9.]+);(?P<hash>[a-zA-Z1-9]+)\n(?P<contents>[0-9a-f]+)$`)
+	re := regexp.MustCompile(`(?m)^\$VAULT;1.0;AES256\n(?P<contents>[0-9a-f]+)$`)
 	matches := re.FindAllStringSubmatch(string(bytes), -1)
 
 	if len(matches) != 1 {
 		return nil, ErrInvalidVaultFile
 	}
 
-	vaultVersion, hash, contents := matches[0][1], matches[0][2], matches[0][3]
-
-	if vaultVersion != "1.0" {
-		return nil, ErrInvalidVaultVersion
-	}
-
-	if hash != "AES256" {
-		return nil, ErrInvalidCipher
-	}
-
-	decoded, err := hex.DecodeString(contents)
+	decoded, err := hex.DecodeString(matches[0][1])
 	if err != nil {
 		return nil, err
 	}
