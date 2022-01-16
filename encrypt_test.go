@@ -8,12 +8,12 @@ import (
 
 func TestEncrypt(t *testing.T) {
 
-	ciphertext, err := Encrypt(Password, Secret)
+	ciphertext, err := encrypt(Password, Secret)
 	if err != nil {
 		t.Error(err)
 	}
 
-	plaintext, err := Decrypt(Password, ciphertext)
+	plaintext, err := decrypt(Password, ciphertext)
 	if err != nil {
 		t.Error(err)
 	}
@@ -28,7 +28,7 @@ func TestDecrypt(t *testing.T) {
 	encrypted, _ := hex.DecodeString("2db88929a4742b18787dbf0d44dc74ac95d851abc9709e85dbffe009f4ce507352408e6ab1d4c2")
 	value := "hello world"
 
-	plaintext, err := Decrypt(Password, encrypted)
+	plaintext, err := decrypt(Password, encrypted)
 	if err != nil {
 		t.Error(err)
 	}

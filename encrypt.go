@@ -8,8 +8,8 @@ import (
 	"io"
 )
 
-func Encrypt(password, value []byte) ([]byte, error) {
-	block, err := DeriveKey(password)
+func encrypt(password, value []byte) ([]byte, error) {
+	block, err := deriveKey(password)
 
 	if err != nil {
 		return nil, err
@@ -23,8 +23,8 @@ func Encrypt(password, value []byte) ([]byte, error) {
 	return block.Seal(nonce, nonce, value, nil), nil
 }
 
-func Decrypt(password, value []byte) ([]byte, error) {
-	block, err := DeriveKey(password)
+func decrypt(password, value []byte) ([]byte, error) {
+	block, err := deriveKey(password)
 	if err != nil {
 		return nil, err
 	}
@@ -35,7 +35,7 @@ func Decrypt(password, value []byte) ([]byte, error) {
 	return block.Open(nil, nonce, encrypted, nil)
 }
 
-func DeriveKey(password []byte) (cipher.AEAD, error) {
+func deriveKey(password []byte) (cipher.AEAD, error) {
 	key := sha256.Sum256(password)
 	block, err := aes.NewCipher(key[:])
 	if err != nil {
