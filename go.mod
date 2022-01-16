@@ -1,3 +1,3 @@
 module github.com/redwebcreation/vault
 
-go 1.16
+go 1.17
