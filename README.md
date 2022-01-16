@@ -3,6 +3,7 @@
 [![Tests status badge](https://github.com/redwebcreation/vault/actions/workflows/tests.yml/badge.svg?branch=main)](https://github.com/redwebcreation/vault/actions/workflows/tests.yml)
 [![Go Report Card](https://goreportcard.com/badge/github.com/redwebcreation/vault)](https://goreportcard.com/report/github.com/redwebcreation/vault)
 [![Codebeat report](https://codebeat.co/badges/f80cdfad-f751-483f-9ff3-f9642e65ed50)](https://codebeat.co/projects/github-com-redwebcreation-vault-main)
+[![Codecov badge](https://codecov.io/gh/redwebcreation/vault/branch/main/graph/badge.svg?token=BV9ZbA0vdg)](https://codecov.io/gh/redwebcreation/vault)
 
 Vault provides a simple file-based key-value store for secrets.
 
