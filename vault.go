@@ -7,6 +7,8 @@ import (
 	"regexp"
 )
 
+var VaultFileRegex = regexp.MustCompile(`(?m)^\$VAULT;1.0;AES256\n(?P<contents>[0-9a-f]+)$`)
+
 type Vault struct {
 	Storage Storage
 }
@@ -29,8 +31,7 @@ func (v *Vault) Get(key string, password []byte) ([]byte, error) {
 		return nil, err
 	}
 
-	re := regexp.MustCompile(`(?m)^\$VAULT;1.0;AES256\n(?P<contents>[0-9a-f]+)$`)
-	matches := re.FindAllStringSubmatch(string(bytes), -1)
+	matches := VaultFileRegex.FindAllStringSubmatch(string(bytes), -1)
 
 	if len(matches) != 1 {
 		return nil, ErrInvalidVaultFile
