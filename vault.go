@@ -1,9 +1,14 @@
 package vault
 
-import "os"
+import (
+	"encoding/hex"
+	"fmt"
+	"os"
+	"regexp"
+)
 
 type Vault struct {
-	storage Storage
+	Storage Storage
 }
 
 func NewVault(path string) (*Vault, error) {
@@ -13,23 +18,60 @@ func NewVault(path string) (*Vault, error) {
 		return nil, err
 	}
 
-	return &Vault{storage: &LocalStorage{
-		Path: path,
-	}}, nil
+	return &Vault{
+		Storage: Fs(path),
+	}, nil
 }
 
 func (v *Vault) Get(key string, password []byte) ([]byte, error) {
-	return v.storage.Get(key, password)
+	bytes, err := v.Storage.Read(key)
+	if err != nil {
+		return nil, err
+	}
+
+	re := regexp.MustCompile(`(?m)^\$VAULT;(?P<version>[0-9.]+);(?P<hash>[a-zA-Z1-9]+)\n(?P<contents>[0-9a-f]+)$`)
+	matches := re.FindAllStringSubmatch(string(bytes), -1)
+
+	if len(matches) != 1 {
+		return nil, ErrInvalidVaultFile
+	}
+
+	vaultVersion, hash, contents := matches[0][1], matches[0][2], matches[0][3]
+
+	if vaultVersion != "1.0" {
+		return nil, ErrInvalidVaultVersion
+	}
+
+	if hash != "AES256" {
+		return nil, ErrInvalidCipher
+	}
+
+	decoded, err := hex.DecodeString(contents)
+	if err != nil {
+		return nil, err
+	}
+
+	return Decrypt(password, decoded)
 }
 
 func (v *Vault) Set(key string, value []byte, password []byte) error {
-	return v.storage.Set(key, value, password)
+	encrypted, err := Encrypt(password, value)
+	if err != nil {
+		return err
+	}
+
+	contents := fmt.Sprintf("$VAULT;1.0;AES256\n%x", encrypted)
+
+	return v.Storage.Write(
+		key,
+		[]byte(contents),
+	)
 }
 
 func (v *Vault) Delete(key string) error {
-	return v.storage.Delete(key)
+	return v.Storage.Delete(key)
 }
 
 func (v *Vault) Has(key string) bool {
-	return v.storage.Has(key)
+	return v.Storage.Has(key)
 }

@@ -1,36 +1,34 @@
 package vault
 
 import (
+	"bytes"
 	"encoding/hex"
 	"testing"
 )
 
 func TestEncrypt(t *testing.T) {
-	password := []byte("password")
-	value := []byte("hello world")
 
-	ciphertext, err := encrypt(password, value)
+	ciphertext, err := Encrypt(Password, Secret)
 	if err != nil {
 		t.Error(err)
 	}
 
-	plaintext, err := decrypt(password, ciphertext)
+	plaintext, err := Decrypt(Password, ciphertext)
 	if err != nil {
 		t.Error(err)
 	}
 
-	if string(plaintext) != string(value) {
-		t.Errorf("expected %s, got %s", string(value), string(plaintext))
+	if !bytes.Equal(plaintext, Secret) {
+		t.Errorf("expected %s, got %s", Secret, plaintext)
 	}
 }
 
 func TestDecrypt(t *testing.T) {
 	// "hello world" encrypted with "password"
 	encrypted, _ := hex.DecodeString("2db88929a4742b18787dbf0d44dc74ac95d851abc9709e85dbffe009f4ce507352408e6ab1d4c2")
-	password := []byte("password")
 	value := "hello world"
 
-	plaintext, err := decrypt(password, encrypted)
+	plaintext, err := Decrypt(Password, encrypted)
 	if err != nil {
 		t.Error(err)
 	}
